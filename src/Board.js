@@ -97,6 +97,7 @@
           return accumulator + value;
         });
         storageArray.push(singleValue);
+        //if singleValue > 1; return true
       }
 
       for (var j = 0; j < storageArray.length; j++) {
@@ -160,7 +161,9 @@
       //making our columns
       for (var i = 0; i < rows.length; i++) {
         column.push(this.hasColConflictAt(i));
+        //if any of them have a conflict, return true
       };
+      //else, return false
 
         var colinStorage = [];
 
@@ -169,6 +172,7 @@
           return accumulator + value;
         });
         colinStorage.push(singleValue);
+        //if singleValue > 1; return true
       }
 
       for (var j = 0; j < colinStorage.length; j++) {
@@ -187,101 +191,144 @@
     // test if a specific major diagonal on this board contains a conflict
 
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
-      var holder = [];
+      // debugger;
+      var size = this.attributes.n;
+      var count = 0;
 
-      return false; // fixme
+      for (var i = 0; i < size; i++) {
+        if(this.get(i)[majorDiagonalColumnIndexAtFirstRow + i]) {
+          count += this.get(i)[majorDiagonalColumnIndexAtFirstRow + i];
+          // console.log(count);
+        }
+      }
+      return count > 1;
+      
+
+      // return false; // fixme
     },
 
     // test if any major diagonals on this board contain conflicts
     hasAnyMajorDiagonalConflicts: function() {
-     
-      var rows = this.rows();
-      //get rid of the subroutine below
-      //we're going to make a new function that, if we find a 1 value, and there's nothing next to it in a major diagonal, run this new function
-      //this new function recursively checks all the different positions for n rows and values of one
-      //rows[4][3] === undefined {return};
-      //console.log(rows[4]);
-      var subroutine = function(x, y){
-        if (rows[x] === undefined) {
-          return false;
-        }
-        if (rows[x][y] === undefined) {
-          return false;
-        }
-        else if (rows[x][y] === 1) {
-          return true;
-        }
-        else if (rows[x+1] === undefined) {
-          return false;
-        }
-        else if (rows[x+1][y+1] === undefined) {
-          return false;
-        }
-        
-        subroutine((x+1), (y+1));
-        
-        return false;
-      };
+      var size = this.attributes.n;
+      // var count = 0;
 
-        for (var x = 0; x < rows.length; x ++) {
-          for(var y = 0; y < rows[x].length; y++) {
-            if(rows[x][y] === 1){
-              if(rows[x + 1][y + 1] === 1) {
-                return true;
-              } else{ 
-                  return subroutine((x+2), (y+2));
-              }
-            }
-          }
-        }
-    },
+      for (var j = -size; j < size; j++) {
+        if(this.hasMajorDiagonalConflictAt(j)) {
+          return true;
+        };
+      };
+      return false
+
+     
+      //  var rows = this.rows();
+      // //get rid of the subroutine below
+      // //we're going to make a new function that, if we find a 1 value, and there's nothing next to it in a major diagonal, run this new function
+      // //this new function recursively checks all the different positions for n rows and values of one
+      // //rows[4][3] === undefined {return};
+      // // //console.log(rows[4]);
+      // var subroutine = function(x, y){
+      //   if (rows[x] === undefined) {
+      //     return false;
+      //   }
+
+      //   if (rows[x][y] === undefined) {
+      //     return false;
+      //   }
+      //   else if (rows[x][y] === 1) {
+      //     return true;
+      //   }
+      //   else if (rows[x+1] === undefined) {
+      //     return false;
+      //   }
+      //   else if (rows[x+1][y+1] === undefined) {
+      //     return false;
+      //   }
+        
+      //   subroutine((x+1), (y+1));
+        
+      //   //return false;
+      // };
+
+      //   for (var x = 0; x < rows.length; x ++) {
+      //     for(var y = 0; y < rows[x].length; y++) {
+      //       if(rows[x][y] === 1){
+      //         if(rows[x + 1][y + 1] === 1) {
+      //           return true;
+      //         } else{ 
+      //             return subroutine((x+2), (y+2));
+      //         }
+      //       }
+      //     }
+      //   }
+     },
     // Minor Diagonals - go from top-right to bottom-left
     // --------------------------------------------------------------
     //
     // test if a specific minor diagonal on this board contains a conflict
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
+      var size = this.attributes.n;
+      var count = 0;
 
-      return false; // fixme
+      for (var i = 0; i < size; i++) {
+        if(this.get(i)[minorDiagonalColumnIndexAtFirstRow - i]) {
+          count += this.get(i)[minorDiagonalColumnIndexAtFirstRow - i];
+          // console.log(count);
+        }
+      }
+      //console.log('this is the result', count > 1);
+      return count > 1;
+
+      //return false; // fixme
     },
 
     // test if any minor diagonals on this board contain conflicts
     hasAnyMinorDiagonalConflicts: function() {
-      var rows = this.rows();
+       var size = this.attributes.n;
+      // var count = 0;
 
-      var subroutine = function(x, y){
-        if (rows[x] === undefined) {
-          return false;
-        }
-        if (rows[x][y] === undefined) {
-          return false;
-        }
-        else if (rows[x][y] === 1) {
+      for (var j = 0; j <= (size * 2); j++) {
+        if(this.hasMinorDiagonalConflictAt(j)) {
           return true;
-        }
-        else if (rows[x+1] === undefined) {
-          return false;
-        }
-        else if (rows[x+1][y+1] === undefined) {
-          return false;
-        }
-        
-        subroutine((x+1), (y+1));
-        
-        return false;
+        };
       };
+      return false
+      // var rows = this.rows();
 
-        for (var x = 0; x < rows.length; x ++) {
-          for(var y = 0; y < rows[x].length; y++) {
-            if(rows[x][y] === 1){
-              if(rows[x + 1][y + 1] === 1) {
-                return true;
-              } else{ 
-                  return subroutine((x+2), (y+2));
-              }
-            }
-          }
-        }
-      return false; // fixme
+      // var subroutine = function(x, y){
+      //   if (rows[x] === undefined) {
+      //     return false;
+      //   }
+      //   if (rows[x][y] === undefined) {
+      //     return false;
+      //   }
+      //   else if (rows[x][y] === 1) {
+      //     return true;
+      //   }
+      //   else if (rows[x+1] === undefined) {
+      //     return false;
+      //   }
+      //   else if (rows[x+1][y+1] === undefined) {
+      //     return false;
+      //   }
+        
+      //   subroutine((x+1), (y+1));
+        
+      //   return false;
+      // };
+
+      //   for (var x = 0; x < rows.length; x ++) {
+      //     for(var y = 0; y < rows[x].length; y++) {
+      //       if(rows[x][y] === 1){
+      //         if(rows[x + 1][y + 1] === 1) {
+      //           return true;
+      //         } else{ 
+      //             return subroutine((x+2), (y+2));
+      //         }
+      //       }
+      //     }
+      //   }
+      //return false; // fixme
+      // return false;
     }
 
     /*--------------------  End of Helper Functions  ---------------------*/
